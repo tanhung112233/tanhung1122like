@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 FREE_FIRE_API_URL = "https://www.info.freefireofficial.com/api/sg/{}?key=nishant4545321"
 
-@app.route('/info', methods=['GET'])
+@app.route('/api/info', methods=['GET'])  # Đặt route theo chuẩn của Vercel
 def get_player_info():
     uid = request.args.get("uid")  # Lấy UID từ request
     
@@ -27,5 +27,6 @@ def get_player_info():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+# Tạo handler để chạy trên Vercel
+def handler(event, context):
+    return app(event, context)
