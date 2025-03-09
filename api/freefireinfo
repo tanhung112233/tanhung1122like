@@ -1,0 +1,31 @@
+from flask import Flask, request, jsonify
+import requests
+
+app = Flask(__name__)
+
+FREE_FIRE_API_URL = "https://www.info.freefireofficial.com/api/sg/{}?key=nishant4545321"
+
+@app.route('/info', methods=['GET'])
+def get_player_info():
+    uid = request.args.get("uid")  # Lấy UID từ request
+    
+    if not uid:
+        return jsonify({"error": "UID is required"}), 400
+    
+    url = FREE_FIRE_API_URL.format(uid)  # Gọi API Free Fire
+
+    try:
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            player_data = response.json()
+            player_data["@checkinfo132"] = "Join Group"
+            return jsonify(player_data)
+        else:
+            return jsonify({"error": "Failed to retrieve player data", "status_code": response.status_code}), 500
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
